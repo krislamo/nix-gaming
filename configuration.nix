@@ -17,7 +17,10 @@
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
-  # networking.hostName = "nixos"; # Define your hostname.
+  # Need nonfree for nvidia software and gaming
+  nixpkgs.config.allowUnfree = true;
+
+  networking.hostName = "nix-gaming";
 
   # Configure network connections interactively with nmcli or nmtui.
   networking.networkmanager.enable = true;
@@ -40,9 +43,17 @@
   # Enable the X11 windowing system.
   # services.xserver.enable = true;
 
+  # Enable KDE Plasma + Wayland
+  services.desktopManager.plasma6.enable = true;
+  services.displayManager.sddm.enable = true;
+  services.displayManager.sddm.wayland.enable = true;
 
+  # Enable passthrough NVIDIA GPU
+  hardware.graphics.enable = true;
+  services.xserver.videoDrivers = [ "nvidia" ];
+  hardware.nvidia.modesetting.enable = true;
+  hardware.nvidia.open = true;
   
-
   # Configure keymap in X11
   services.xserver.xkb.layout = "us";
   # services.xserver.xkb.options = "eurosign:e,caps:escape";
@@ -72,6 +83,14 @@
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMVsGWibChfJE8/ANAAd/ceQpbIm6o/5micL24km4hRj kris@klein"
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIItaV0DsusX/PVZAC48E63o39L4IjCXGnNm6jWnZLI9k kris@pike"
     ];
+  };
+
+  programs.git = {
+    enable = true;
+    config = {
+      user.name = "Kris Lamoureux";
+      user.email = "kris@lamoureux.io";
+    };
   };
 
   # programs.firefox.enable = true;
