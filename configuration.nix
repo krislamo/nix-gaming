@@ -44,7 +44,7 @@
   
 
   # Configure keymap in X11
-  # services.xserver.xkb.layout = "us";
+  services.xserver.xkb.layout = "us";
   # services.xserver.xkb.options = "eurosign:e,caps:escape";
 
   # Enable CUPS to print documents.
@@ -62,22 +62,26 @@
   # services.libinput.enable = true;
 
   # Define a user account. Don't forget to set a password with 'passwd'.
-  # users.users.alice = {
-  #   isNormalUser = true;
-  #   extraGroups = [ "wheel" ]; # Enable 'sudo' for the user.
-  #   packages = with pkgs; [
-  #     tree
-  #   ];
-  # };
+  users.users.kris = {
+    isNormalUser = true;
+    description = "Kris";
+    extraGroups = [ "wheel" ];
+    shell = pkgs.bash;
+    home = "/home/kris";
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMVsGWibChfJE8/ANAAd/ceQpbIm6o/5micL24km4hRj kris@klein"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIItaV0DsusX/PVZAC48E63o39L4IjCXGnNm6jWnZLI9k kris@pike"
+    ];
+  };
 
   # programs.firefox.enable = true;
 
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
-  # environment.systemPackages = with pkgs; [
-  #   vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-  #   wget
-  # ];
+  environment.systemPackages = with pkgs; [
+    vim
+    wget
+  ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -90,7 +94,8 @@
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
+  services.openssh.enable = true;
+  services.openssh.settings.PasswordAuthentication = false;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
