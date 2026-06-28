@@ -127,6 +127,7 @@
     kdePackages.bluez-qt
     ncdu
     pciutils
+    stow
     terminator
     tmux
     tree
