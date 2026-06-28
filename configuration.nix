@@ -14,16 +14,36 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  # Machine name
+  networking.hostName = "nix-gaming";
+
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # Need nonfree for nvidia software and gaming
   nixpkgs.config.allowUnfree = true;
 
-  networking.hostName = "nix-gaming";
-
   # Configure network connections interactively with nmcli or nmtui.
   networking.networkmanager.enable = true;
+
+  # Add NetworkManager profile with static IP
+  networking.networkmanager.ensureProfiles.profiles = {
+    "ens18-static" = {
+      connection = {
+        id = "Ethernet";
+        type = "ethernet";
+        interface-name = "ens18";
+      };
+      ipv4 = {
+        method = "manual";
+        address1 = "192.168.95.12/24,192.168.95.1";
+        dns = "192.168.95.1;";
+      };
+      ipv6 = {
+        method = "disabled";
+      };
+    };
+  };
 
   # Set your time zone.
   # time.timeZone = "Europe/Amsterdam";
