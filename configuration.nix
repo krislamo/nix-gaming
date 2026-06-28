@@ -46,7 +46,7 @@
   };
 
   # Set your time zone.
-  # time.timeZone = "Europe/Amsterdam";
+  time.timeZone = "America/New_York";
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
@@ -118,7 +118,13 @@
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
   environment.systemPackages = with pkgs; [
+    chromium
+    ncdu
+    terminator
+    tmux
+    tree
     vim
+    vscodium
     wget
   ];
 
