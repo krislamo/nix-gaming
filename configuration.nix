@@ -73,6 +73,10 @@
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware.nvidia.modesetting.enable = true;
   hardware.nvidia.open = true;
+
+  # Bluetooth
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = true;
   
   # Configure keymap in X11
   services.xserver.xkb.layout = "us";
@@ -119,10 +123,14 @@
   # You can use https://search.nixos.org/ to find more packages (and options).
   environment.systemPackages = with pkgs; [
     chromium
+    kdePackages.bluedevil
+    kdePackages.bluez-qt
     ncdu
+    pciutils
     terminator
     tmux
     tree
+    usbutils
     vim
     vscodium
     wget
