@@ -72,7 +72,7 @@
   hardware.graphics.enable = true;
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware.nvidia.modesetting.enable = true;
-  hardware.nvidia.open = true;
+  hardware.nvidia.open = false;
 
   # Bluetooth
   hardware.bluetooth.enable = true;
