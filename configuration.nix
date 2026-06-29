@@ -109,6 +109,11 @@
     ];
   };
 
+  # Drop once dotfiles move to Home Manager
+  programs.bash.interactiveShellInit = ''
+    [[ -f ~/.bashrc ]] && source ~/.bashrc
+  '';
+
   programs.git = {
     enable = true;
     config = {
