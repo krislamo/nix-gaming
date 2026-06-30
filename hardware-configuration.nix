@@ -27,6 +27,12 @@
       options = [ "fmask=0022" "dmask=0022" ];
     };
 
+  fileSystems."/srv/steam" = {
+    device = "/dev/disk/by-label/STEAMGAMES";
+    fsType = "ext4";
+    options = [ "noatime" "nofail" ];
+  };
+
   swapDevices = [ ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
