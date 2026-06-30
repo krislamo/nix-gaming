@@ -80,6 +80,9 @@
   # Bluetooth
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
+
+  # Some Proton games may need 32-bit graphics support
+  hardware.graphics.enable32Bit = true;
   
   # Configure keymap in X11
   services.xserver.xkb.layout = "us";
@@ -125,7 +128,8 @@
     };
   };
 
-  # programs.firefox.enable = true;
+  # Add Valve's Steam for games
+  programs.steam.enable = true;
 
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
