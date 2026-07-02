@@ -8,28 +8,42 @@
 { config, lib, pkgs, ... }:
 
 {
+  ###############
+  ### Imports ###
+  ###############
+
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
     ];
 
+  ###############
+  ### Nixpkgs ###
+  ###############
+
+  # Need nonfree for nvidia software and gaming.
+  nixpkgs.config.allowUnfree = true;
+
+  ############
+  ### Boot ###
+  ############
+
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  # Machine name
-  networking.hostName = "nix-gaming";
-
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
-  # Need nonfree for nvidia software and gaming
-  nixpkgs.config.allowUnfree = true;
+  ##################
+  ### Networking ###
+  ##################
 
-  # Configure network connections interactively with nmcli or nmtui.
+  # Machine name.
+  networking.hostName = "nix-gaming";
+
+  # Add NetworkManager profile with static IP.
   networking.networkmanager.enable = true;
-
-  # Add NetworkManager profile with static IP
   networking.networkmanager.ensureProfiles.profiles = {
     "ens18-static" = {
       connection = {
@@ -48,12 +62,18 @@
     };
   };
 
+  # Open ports in the firewall.
+  # networking.firewall.allowedTCPPorts = [ ... ];
+  # networking.firewall.allowedUDPPorts = [ ... ];
+  # Or disable the firewall altogether.
+  # networking.firewall.enable = false;
+
+  ############
+  ### Time ###
+  ############
+
   # Set your time zone.
   time.timeZone = "America/New_York";
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Select internationalisation properties.
   # i18n.defaultLocale = "en_US.UTF-8";
@@ -63,33 +83,36 @@
   #   useXkbConfig = true; # use xkb.options in tty.
   # };
 
-  # Enable the X11 windowing system.
-  # services.xserver.enable = true;
+  ################
+  ### Hardware ###
+  ################
 
-  # Enable KDE Plasma + Wayland
-  services.desktopManager.plasma6.enable = true;
-  services.displayManager.sddm.enable = true;
-  services.displayManager.sddm.wayland.enable = true;
-
-  # Enable passthrough NVIDIA GPU
+  # Enable passthrough NVIDIA GPU.
   hardware.graphics.enable = true;
-  services.xserver.videoDrivers = [ "nvidia" ];
   hardware.nvidia.modesetting.enable = true;
   hardware.nvidia.open = false;
 
-  # Bluetooth
+  # Some Proton games may need 32-bit graphics support.
+  hardware.graphics.enable32Bit = true;
+
+  # Bluetooth.
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
 
-  # Some Proton games may need 32-bit graphics support
-  hardware.graphics.enable32Bit = true;
-  
-  # Configure keymap in X11
-  services.xserver.xkb.layout = "us";
-  # services.xserver.xkb.options = "eurosign:e,caps:escape";
+  ################
+  ### Services ###
+  ################
 
-  # Enable CUPS to print documents.
-  # services.printing.enable = true;
+  # Enable KDE Plasma + Wayland.
+  services.desktopManager.plasma6.enable = true;
+  services.displayManager.sddm.enable = true;
+  services.displayManager.sddm.wayland.enable = true;
+  services.xserver.xkb.layout = "us";
+  services.xserver.videoDrivers = [ "nvidia" ];
+
+  # Enable the OpenSSH daemon.
+  services.openssh.enable = true;
+  services.openssh.settings.PasswordAuthentication = false;
 
   # Enable sound.
   # services.pulseaudio.enable = true;
@@ -99,10 +122,10 @@
   #   pulse.enable = true;
   # };
 
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.libinput.enable = true;
+  #############
+  ### Users ###
+  #############
 
-  # Define a user account. Don't forget to set a password with 'passwd'.
   users.users.kris = {
     isNormalUser = true;
     description = "Kris";
@@ -115,7 +138,11 @@
     ];
   };
 
-  # Drop once dotfiles move to Home Manager
+  ###############
+  ## Programs ###
+  ###############
+
+  # Drop once dotfiles move to Home Manager.
   programs.bash.interactiveShellInit = ''
     [[ -f ~/.bashrc ]] && source ~/.bashrc
   '';
@@ -128,8 +155,20 @@
     };
   };
 
-  # Add Valve's Steam for games
+  # Add Valve's Steam for games.
   programs.steam.enable = true;
+
+  # Some programs need SUID wrappers, can be configured further or are
+  # started in user sessions.
+  # programs.mtr.enable = true;
+  # programs.gnupg.agent = {
+  #   enable = true;
+  #   enableSSHSupport = true;
+  # };
+
+  #################
+  ## Environment ##
+  #################
 
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
@@ -149,31 +188,6 @@
     vscodium
     wget
   ];
-
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
-
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
-  services.openssh.settings.PasswordAuthentication = false;
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
-
-  # Copy the NixOS configuration file and link it from the resulting system
-  # (/run/current-system/configuration.nix). This is useful in case you
-  # accidentally delete configuration.nix.
-  # system.copySystemConfiguration = true;
 
   # This option defines the first version of NixOS you have installed on this particular machine,
   # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.
@@ -195,4 +209,3 @@
   system.stateVersion = "26.05"; # Did you read the comment?
 
 }
-
